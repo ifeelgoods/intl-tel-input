@@ -1,6 +1,6 @@
 {
   "name": "intl-tel-input",
-  "version": "3.7.1-basil",
+  "version": "3.7.1+ifg.2",
   "description": "A jQuery plugin for entering international telephone numbers",
   "keywords": [
     "international",

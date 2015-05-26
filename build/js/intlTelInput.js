@@ -1,5 +1,5 @@
 /*
-International Telephone Input v3.7.1-basil
+International Telephone Input v3.7.1+ifg.2
 https://github.com/Bluefieldscom/intl-tel-input.git
 */
 // wrap in UMD - see https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
@@ -73,7 +73,8 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         init: function() {
             var that = this;
             var basil = window.Basil ? new window.Basil({
-                secure: true
+                secure: true,
+                storages: [ "memory" ]
             }) : null;
             // if defaultCountry is set to "auto", we must do a lookup first
             if (this.options.defaultCountry == "auto") {
@@ -94,7 +95,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
                     if (response && response.country) {
                         that.options.defaultCountry = response.country.toLowerCase();
                         if (basil) {
-                            basil.set("__ifg_itiAutoCountry", response.country);
+                            basil.set("__ifg_itiAutoCountry", response.country.toLowerCase());
                         }
                     }
                 }, "jsonp").always(function() {
