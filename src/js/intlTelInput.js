@@ -403,9 +403,10 @@ Plugin.prototype = {
 
   _loadAutoCountry: function() {
     var that = this;
+    var basil = (window.Basil) ? (new window.Basil({secure: true})) : null;
 
     // check for cookie
-    var cookieAutoCountry = ($.cookie) ? $.cookie("itiAutoCountry") : "";
+    var cookieAutoCountry = (basil) ? basil.get("__ifg_itiAutoCountry") : "";
     if (cookieAutoCountry) {
       $.fn[pluginName].autoCountry = cookieAutoCountry;
     }
@@ -427,10 +428,8 @@ Plugin.prototype = {
       // dont bother with the success function arg - instead use always() as should still set a defaultCountry even if the lookup fails
       $.get(ipinfoURL, function() {}, "jsonp").always(function(resp) {
         $.fn[pluginName].autoCountry = (resp && resp.country) ? resp.country.toLowerCase() : "";
-        if ($.cookie) {
-          $.cookie("itiAutoCountry", $.fn[pluginName].autoCountry, {
-            path: '/'
-          });
+        if (basil) {
+          basil.set("__ifg_itiAutoCountry", $.fn[pluginName].autoCountry);
         }
         // tell all instances the auto country is ready
         // TODO: this should just be the current instances
