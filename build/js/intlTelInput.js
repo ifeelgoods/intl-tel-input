@@ -1,5 +1,5 @@
 /*
-International Telephone Input v3.7.1
+International Telephone Input v3.7.1-basil
 https://github.com/Bluefieldscom/intl-tel-input.git
 */
 // wrap in UMD - see https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
@@ -72,8 +72,18 @@ https://github.com/Bluefieldscom/intl-tel-input.git
     Plugin.prototype = {
         init: function() {
             var that = this;
+            var basil = window.Basil ? new window.Basil({
+                secure: true
+            }) : null;
             // if defaultCountry is set to "auto", we must do a lookup first
             if (this.options.defaultCountry == "auto") {
+                var cookieAutoCountry = basil ? basil.get("__ifg_itiAutoCountry") : null;
+                // If the country is already saved in the cookie, retrieve it and return ready.
+                if (cookieAutoCountry) {
+                    that.options.defaultCountry = cookieAutoCountry;
+                    that._ready();
+                    return;
+                }
                 // reset this in case lookup fails
                 this.options.defaultCountry = "";
                 var ipinfoURL = "//ipinfo.io";
@@ -83,6 +93,9 @@ https://github.com/Bluefieldscom/intl-tel-input.git
                 $.get(ipinfoURL, function(response) {
                     if (response && response.country) {
                         that.options.defaultCountry = response.country.toLowerCase();
+                        if (basil) {
+                            basil.set("__ifg_itiAutoCountry", response.country);
+                        }
                     }
                 }, "jsonp").always(function() {
                     that._ready();
