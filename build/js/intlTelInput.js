@@ -1,5 +1,5 @@
 /*
-International Telephone Input v6.1.0
+International Telephone Input v6.1.0-basil
 https://github.com/Bluefieldscom/intl-tel-input.git
 */
 // wrap in UMD - see https://github.com/umdjs/umd/blob/master/jqueryPluginCommonjs.js
@@ -348,8 +348,11 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         },
         _loadAutoCountry: function() {
             var that = this;
+            var basil = window.Basil ? new window.Basil({
+                secure: true
+            }) : null;
             // check for cookie
-            var cookieAutoCountry = $.cookie ? $.cookie("itiAutoCountry") : "";
+            var cookieAutoCountry = basil ? basil.get("__ifg_itiAutoCountry") : "";
             if (cookieAutoCountry) {
                 $.fn[pluginName].autoCountry = cookieAutoCountry;
             }
@@ -365,10 +368,8 @@ https://github.com/Bluefieldscom/intl-tel-input.git
                 if (typeof this.options.geoIpLookup === "function") {
                     this.options.geoIpLookup(function(countryCode) {
                         $.fn[pluginName].autoCountry = countryCode.toLowerCase();
-                        if ($.cookie) {
-                            $.cookie("itiAutoCountry", $.fn[pluginName].autoCountry, {
-                                path: "/"
-                            });
+                        if (basil) {
+                            basil.set("__ifg_itiAutoCountry", $.fn[pluginName].autoCountry);
                         }
                         // tell all instances the auto country is ready
                         // TODO: this should just be the current instances
@@ -1133,7 +1134,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
     $.fn[pluginName].getCountryData = function() {
         return allCountries;
     };
-    $.fn[pluginName].version = "6.1.0";
+    $.fn[pluginName].version = "6.1.0-basil";
     // Tell JSHint to ignore this warning: "character may get silently deleted by one or more browsers"
     // jshint -W100
     // Array of country objects for the flag dropdown.
